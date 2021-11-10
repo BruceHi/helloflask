@@ -48,6 +48,9 @@ def go_back(year):
 
 
 # use any URL converter
+# 两种方法都可以，str(colors)[1:-1]，是去除了 [] 符号
+# colors = ['blue', 'white', 'red']
+# @app.route('/colors/<any(%s):color>' % str(colors)[1:-1])
 @app.route('/colors/<any(blue, white, red):color>')
 def three_colors(color):
     return '<p>Love is patient and kind. Love is not jealous or boastful or proud or rude.</p>'
@@ -125,10 +128,17 @@ body: Don't forget the party!
     return response
 
 
+# 执行顺序，先定义一个 response 向量，然后 return, return 之后再重定向到 新的页面。
+# 顺序很重要。
+# hello
+# 127.0.0.1 - - [10/Nov/2021 16:10:53] "GET /set/1234 HTTP/1.1" 302 -
+# 127.0.0.1 - - [10/Nov/2021 16:10:53] "GET /hello HTTP/1.1" 200 -
+
 # set cookie
 @app.route('/set/<name>')
 def set_cookie(name):
     response = make_response(redirect(url_for('hello')))
+    # print('hello')
     response.set_cookie('name', name)
     return response
 
@@ -186,10 +196,10 @@ def load_post():
 
 
 # redirect to last page
-@app.route('/foo')
-def foo():
-    return '<h1>Foo page</h1><a href="%s">Do something and redirect</a>' \
-           % url_for('do_something', next=request.full_path)
+# @app.route('/foo')
+# def foo():
+#     return '<h1>Foo page</h1><a href="%s">Do something and redirect</a>' \
+#            % url_for('do_something', next=request.full_path)
 
 
 @app.route('/bar')
@@ -218,3 +228,17 @@ def redirect_back(default='hello', **kwargs):
         if is_safe_url(target):
             return redirect(target)
     return redirect(url_for(default, **kwargs))
+
+# 测试 返回响应主体、状态码、首部字段
+# @app.route('/hello')
+# def hello():
+#     # return '<h1>hello, W</h1>', 201
+#     return '', 302, {'Location': 'http://www.example.com'}
+
+
+# 设置数据格式：MIME类型
+@app.route('/foo')
+def foo():
+    response = make_response('Hello, World!')
+    response.mimetype = 'text/plain'
+    return response
