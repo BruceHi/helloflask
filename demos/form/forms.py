@@ -22,13 +22,39 @@ class LoginForm(FlaskForm):
 
 
 # custom validator
-class FortyTwoForm(FlaskForm):
-    answer = IntegerField('The Number')
-    submit = SubmitField()
+# class FortyTwoForm(FlaskForm):
+#     answer = IntegerField('The Number')
+#     submit = SubmitField()
+#
+#     def validate_answer(form, field):
+#         if field.data != 42:
+#             raise ValidationError('Must be 42.')
 
-    def validate_answer(form, field):
+# 2. 全局验证器：定义全局函数
+# def is_42(form, field):
+#     if field.data != 42:
+#         raise ValidationError('Must be 42.')
+#
+#
+# class FortyTwoForm(FlaskForm):
+#     answer = IntegerField('The number', validators=[is_42])
+#     submit = SubmitField()
+
+# 3.全局验证器：工厂函数
+def is_42(message=None):
+    # if not message:  # 注意这两个的区别
+    if not message:
+        message = 'Must be 42.'
+
+    def _is_42(form, field):
         if field.data != 42:
-            raise ValidationError('Must be 42.')
+            raise ValidationError(message)
+
+    return _is_42
+
+class FortyTwoForm(FlaskForm):
+    answer = IntegerField('The number', validators=[is_42()])
+    submit = SubmitField()
 
 
 # upload form

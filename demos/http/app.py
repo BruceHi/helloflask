@@ -11,7 +11,8 @@ try:
 except ImportError:
     from urllib.parse import urlparse, urljoin
 
-from jinja2 import escape
+# from jinja2 import escape
+from markupsafe import escape
 from jinja2.utils import generate_lorem_ipsum
 from flask import Flask, make_response, request, redirect, url_for, abort, session, jsonify
 
@@ -36,9 +37,11 @@ def hello():
 
 
 # redirect
-@app.route('/hi')
+# @app.route('/hi')
 def hi():
     return redirect(url_for('hello'))
+
+app.add_url_rule('/hi', 'hi', hi)
 
 
 # use int URL converter
@@ -196,10 +199,10 @@ def load_post():
 
 
 # redirect to last page
-# @app.route('/foo')
-# def foo():
-#     return '<h1>Foo page</h1><a href="%s">Do something and redirect</a>' \
-#            % url_for('do_something', next=request.full_path)
+@app.route('/foo')
+def foo():
+    return '<h1>Foo page</h1><a href="%s">Do something and redirect</a>' \
+           % url_for('do_something', next=request.full_path)
 
 
 @app.route('/bar')
@@ -221,6 +224,8 @@ def is_safe_url(target):
            ref_url.netloc == test_url.netloc
 
 
+# 访问 bar 时跳转到此，有 referer: http://127.0.0.1:5000/bar，next:/bar?
+# 直接访问 do-something，没有 referer，没有 next
 def redirect_back(default='hello', **kwargs):
     for target in request.args.get('next'), request.referrer:
         if not target:
@@ -237,8 +242,11 @@ def redirect_back(default='hello', **kwargs):
 
 
 # 设置数据格式：MIME类型
-@app.route('/foo')
-def foo():
-    response = make_response('Hello, World!')
-    response.mimetype = 'text/plain'
-    return response
+# @app.route('/foo')
+# def foo():
+#     response = make_response('Hello, World!')
+#     response.mimetype = 'text/plain'
+#     return response
+
+if __name__ == '__main__':
+    app.run()

@@ -58,7 +58,7 @@ def bar():
 # register template filter
 @app.template_filter()
 def musical(s):
-    return s + Markup(' &#9835;')
+    return s + Markup(' &#9835;')  # 避免转义
 
 
 # register template test
@@ -91,3 +91,10 @@ def page_not_found(e):
 @app.errorhandler(500)
 def internal_server_error(e):
     return render_template('errors/500.html'), 500
+
+
+@app.route('/hello')
+def hello():
+    # text = Markup('<h1>Hello, Flask!</h1>')
+    text = '<h1>Hello, Flask!</h1>'
+    return render_template('index.html', text=text)

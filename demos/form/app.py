@@ -265,3 +265,7 @@ def upload_for_ckeditor():
     f.save(os.path.join(app.config['UPLOAD_PATH'], f.filename))
     url = url_for('get_file', filename=f.filename)
     return upload_success(url, f.filename)
+
+
+if __name__ == '__main__':
+    print(app.root_path)

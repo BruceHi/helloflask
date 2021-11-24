@@ -1,11 +1,22 @@
 {% extends 'base.html' %}
-{% from 'macros.html' import qux %}
+{% from 'macros.html' import qux, static_file%}
+{# 一句也行，分开也行 #}
+{#{% from 'macros.html' import static_file %}#}
 
 {% block content %}
 {% set name='baz' %}
 <h1>Template</h1>
+{#    {{ text }}#}
+    {{ text|safe }}
+    <h1>Hello, {{ name|default('陌生人')|title }}</h1>
 <ul>
     <li><a href="{{ url_for('watchlist') }}">Watchlist</a></li>
+    <li>{{ foo }}</li>
+    <li>{% if abc is defined %}
+        ddd
+        {% else %}
+        haha
+        {% endif %}</li>
     <li>Filter: {{ foo|musical }}</li>
     <li>Global: {{ bar() }}</li>
     <li>Test: {% if name is baz %}I am baz.{% endif %}</li>
@@ -14,3 +25,11 @@
     <li><a href="{{ url_for('just_flash') }}">Flash something</a></li>
 </ul>
 {% endblock %}
+{# 两个 css 文件有冲突 #}
+{#{% block styles %}#}
+{#    {{ super() }}#}
+{#    {{ static_file ('css', 'css/bootstrap.min.css') }}#}
+{#{% endblock %}#}
+{#{% block scripts %}#}
+{#    {{ st }}#}
+{#{% endblock %}#}
